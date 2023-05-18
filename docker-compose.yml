@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  jupyterhub:
+    build: jupyterhub
+    image: jupyterhub_img
+    container_name: jupyterhub
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jupyterhub_data:/srv/jupyterhub
+    environment:
+      - JUPYTERHUB_ADMIN=fjcapeletto
+      - DOCKER_JUPYTER_CONTAINER=jupyterlab_img
+      - DOCKER_NETWORK_NAME=${COMPOSE_PROJECT_NAME}_default
+      - DOCKER_NOTEBOOK_DIR=/home/jovyan/work
+      - HUB_IP=jupyterhub
+      - HOST
+    restart: on-failure
+    ports:
+      - 1997:8000
+
+  jupyterlab:
+    build: jupyterlab
+    image: jupyterlab_img
+    container_name: jupyterlab-throaway
+    network_mode: none
+    command: echo
+
+volumes:
+  jupyterhub_data:
